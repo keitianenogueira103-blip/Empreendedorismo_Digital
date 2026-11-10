@@ -4127,6 +4127,9 @@ function quadroVideo(f,n,espelho){
 }
 // vai e volta pelos quadros, para não dar salto no fim da sequência
 function vaiVolta(lista,k){const n=lista.length, c=2*n-2, q=((k%c)+c)%c; return lista[q<n?q:c-q]}
+// Ciclo de passos que fecha sem emenda, sempre tocado para a frente (tocar ao contrário faz os pés irem para trás)
+const CICLO_ANDAR={"frente": [4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18], "costas": [25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40], "lado": [45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64]};
+function emCiclo(t,k){const L=CICLO_ANDAR[t]; return L[((k%L.length)+L.length)%L.length]}
 // Escolhe o trecho do vídeo pelo rumo dela em relação à câmera
 function andarVideo(f,fase,v,ang){
   const S=f.sprite.S;
@@ -4143,7 +4146,7 @@ function andarVideo(f,fase,v,ang){
   if(Math.abs(lado)>.6){sp.dir="lado"; sp.esp=lado>0}                // espelha para ela olhar para onde anda
   else if(vem<0){sp.dir="costas"; sp.esp=false}                         // indo embora: de costas
   else {sp.dir="frente"; sp.esp=false}
-  quadroVideo(f,vaiVolta(sp.dir==="costas"?S.costas:sp.dir==="lado"?S.lado:S.frente,k),sp.esp);
+  quadroVideo(f,emCiclo(sp.dir,k),sp.esp);
 }
 // Caminhada: o corpo fica parado; braços balançam alternados e cada pé sobe na sua vez.
 // fase = andamento do passo, v = 0 parada até 1 andando, corre = passo de corrida
